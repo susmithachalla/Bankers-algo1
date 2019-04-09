@@ -1,75 +1,86 @@
-//Banker's algorithm
+//Bankers algorithm
 #include<stdio.h>
-#include<unistd.h> 
-#include<stdlib.h>
+#include<unistd.h>
 #include<string.h>
+int main()
+{
 static int P = 5;  
-static int R = 3; 
-int i,j,p,k;
-void calculate1(int need[P][R],int maxm[P][R],int allot[P][R]) 
-{
-	for (i = 0 ; i < P ; i++)
-    {
-		for (j = 0 ; j < R ; j++) 
-	    need[i][j] = maxm[i][j] - allot[i][j];
-	}
-}
-enum bool {false, true}; //There is no bool type in c so we use enum instead of that..
-bool isSafe(int processes[],int avail[],int maxm[][R],int allot[][R]) 
-{
-int need[P][R]; 
-calculate1(need, maxm, allot); 
-    bool finish[P] = {0}; 
-  
-    // To store safe sequence 
-    int safeSeq[P]; 
-    int work[R]; 
-    for (i = 0; i < R ; i++) 
-    	work[i] = avail[i]; 
-    int count = 0; 
-    while (count < P) 
-    { 
-        bool found = false; 
-        for (p = 0; p < P; p++) 
-        { 
-           if (finish[p] == 0) 
-            { 
-                int j; 
-                for (j = 0; j < R; j++) 
-                    if (need[p][j] > work[j]) 
-                        break; 
-                if (j == R) 
-                { 
-                	for (k = 0 ; k < R ; k++) 
-                    work[k] += allot[p][k]; 
-  
-                    safeSeq[count++] = p; 
-  
-                    finish[p] = 1; 
-  
-                    found = true; 
-                } 
-            } 
-        }  
-        if (found == false) 
-        { 
-            printf("System is not in safe state"); 
-            return false; 
-        } 
-    } 
-    printf("System is in safe state.\nSafe"
-         " sequence is: "); 
-    for (int i = 0; i < P ; i++) 
-        printf(safeSeq[i]); 
-  
-    return true; 
-} 
-int main() 
-{ 
-    int processes[] = {0, 1, 2, 3, 4};  
+static int R = 3;
+	int processes[] = {0, 1, 2, 3, 4};  
     int avail[] = {3, 3, 2}; 
     int maxm[][R] = {{7, 5, 3}, {3, 2, 2}, {9, 0, 2}, {2, 2, 2}, {4, 3, 3}}; 
-    int allot[][R] = {{0, 1, 0}, {2, 0, 0}, {3, 0, 2}, {2, 1, 1}, {0, 0, 2}};  
-    isSafe(processes, avail, maxm, allot); 
-    return 0; 
+    int allot[][R] = {{0, 1, 0}, {2, 0, 0}, {3, 0, 2}, {2, 1, 1}, {0, 0, 2}};
+	int p,i,j,c=0,x=0,available; 
+	int allocation[10],max[10],need[10],flag[10],sequence[10];
+	printf("Enter the number of process : ");
+	scanf("%d",&p);
+	printf("----------------------------------\n");
+	for(i=0;i<p;i++)
+	{
+    	flag[i]=0;  //initially no process's need is fulfilled
+	}
+	for(i=0;i<p;i++)
+	{	
+    	printf("\nEnter the ALLOCATION for process P[%d] : ",i);
+    	scanf("%d",&allocation[i]);
+    	printf("Enter the MAX for process P[%d] : ",i);
+    	scanf("%d",&max[i]);
+	}
+	printf("\n----------------------------------\n");
+	printf("Enter the AVAILABLE resources :");
+	scanf("%d",&available);
+	printf("----------------------------------\n");
+
+	for(i=0;i<p;i++)
+	{
+    	need[i]=max[i]-allocation[i];
+	}
+
+	printf("\n----------------------------------\n");
+	for(i=0;i<p;i++)
+	{
+    	printf("Need of P[%d] is : %d\n",i,need[i]);
+	}
+	printf("----------------------------------\n");
+
+	for(i=0;i<p;i++)
+	{
+    	for(j=0;j<p;j++)
+    	{
+        	if(flag[j]==0 && need[j]<=available)
+        	{
+        		available=available+allocation[j];
+        		flag[j]=1;
+        		printf("\n-----------------------------------------\n");
+        		printf("Process %d has been allocated resources",j);
+        		sequence[c]=j;
+        		c++;
+        	}
+    	}
+	}
+	printf("\n-----------------------------------------\n");
+	for(i=0;i<p;i++)
+	{
+    	if(flag[i]==0)
+    	{
+    		printf("\n\t*************************************\n");
+    		printf("\t\tSYSTEM IS IN UNSAFE STATE\n");
+    		printf("\t*************************************\n");
+   			x=1;
+    		break;
+    	}
+   }
+	if(x==0)
+	{
+		printf("\n\t*************************************\n");
+		printf("\t\tSYSTEM IS IN SAFE STATE\n");
+		printf("\t*************************************\n");
+		printf("\n-------------------------------------\n");
+		printf("Safe sequence is : ");
+		for(i=0;i<p;i++)
+		{
+    		printf("P[%d]  ",sequence[i]);
+		}
+		printf("\n-------------------------------------\n");
+	}	
 }
